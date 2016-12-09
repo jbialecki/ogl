@@ -21,11 +21,20 @@ using namespace glm;
 #define VORTICES_PER_TRIANGLE 3
 
         static const GLfloat g_vertex_lines[] = { 
-                 0.6f,  0.6f, 0.0f,
-                 0.7f,  0.7f, 0.0f,
+		-1, -1, -1,    -1, -1,  1,
+		-1,  1, -1,    -1,  1,  1,
+		 1,  1, -1,     1,  1,  1,
+		 1, -1, -1,     1, -1,  1,
 
-                 0.8f,  0.8f, 0.0f,
-                 0.9f,  0.9f, 0.0f,
+		-1, -1, -1,    -1,  1, -1,
+		-1, -1, -1,     1, -1, -1,
+		 1,  1, -1,    -1,  1, -1,
+		 1,  1, -1,     1, -1, -1,
+
+		-1, -1,  1,    -1,  1,  1,
+		-1, -1,  1,     1, -1,  1,
+		 1,  1,  1,    -1,  1,  1,
+		 1,  1,  1,     1, -1,  1,
         };
         static const GLfloat g_vertex_buffer_data[] = { 
                 -1.0f, -1.0f, 0.0f,
@@ -65,7 +74,7 @@ void processPrimitives(GLuint vertexbuffer, const GLfloat *buff, int primitive_c
 }
 void processLines(unsigned int vertexbuffer )
 {
-        processPrimitives(vertexbuffer, g_vertex_lines, 2, VORTICES_PER_LINE, GL_LINES);
+        processPrimitives(vertexbuffer, g_vertex_lines, 12, VORTICES_PER_LINE, GL_LINES);
 }
 
 void processTriangles(unsigned int vertexbuffer)
@@ -177,7 +186,7 @@ int main( void )
 		setView(MatrixID);
 		
                 processLines(vertexbuffer );
-                processTriangles(vertexbuffer );
+//                processTriangles(vertexbuffer );
 
 
 
