@@ -15,6 +15,66 @@ using namespace glm;
 
 #include <common/shader.hpp>
 
+
+#define FLOATS_PER_VERTEX 3
+#define VORTICES_PER_LINE 2
+#define VORTICES_PER_TRIANGLE 3
+
+	static const GLfloat g_vertex_lines[] = { 
+		 0.6f,  0.6f, 0.0f,
+		 0.7f,  0.7f, 0.0f,
+
+		 0.8f,  0.8f, 0.0f,
+		 0.9f,  0.9f, 0.0f,
+	};
+	static const GLfloat g_vertex_buffer_data[] = { 
+		-1.0f, -1.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f,
+		 0.0f,  1.0f, 0.0f,
+
+		 0.0f,  1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		-1.0f,  0.0f, 0.0f,
+	};
+
+void processPrimitives(GLuint vertexbuffer, const GLfloat *buff, int primitive_count, int vortices_per_primitive, int primitive_type)
+{
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBufferData(	
+			GL_ARRAY_BUFFER, 
+			primitive_count * vortices_per_primitive * FLOATS_PER_VERTEX * sizeof(float), 
+			buff, 
+			GL_STATIC_DRAW
+		);
+	glVertexAttribPointer(
+			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			FLOATS_PER_VERTEX,  // floats per vertex
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            // array buffer offset
+		);
+
+	glDrawArrays(	
+			primitive_type, 
+			0, 	  					// idx of first vertex in buffer
+			primitive_count * vortices_per_primitive	// number of vortices
+		);  
+	glDisableVertexAttribArray(0);
+}
+void processLines(unsigned int vertexbuffer )
+{
+	processPrimitives(vertexbuffer, g_vertex_lines, 2, VORTICES_PER_LINE, GL_LINES);
+}
+
+void processTriangles(unsigned int vertexbuffer)
+{
+	processPrimitives(vertexbuffer, g_vertex_buffer_data, 2, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
+}
+
+
+
 int main( void )
 {
 	// Initialise GLFW
@@ -64,21 +124,6 @@ int main( void )
 	GLuint programID = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 
 
-	static const GLfloat g_vertex_buffer_data[] = { 
-		-1.0f, -1.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f,
-		 0.0f,  1.0f, 0.0f,
-
-		 0.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		-1.0f,  0.0f, 0.0f,
-	};
-	static const GLfloat g_vertex_lines[] = { 
-		 0.6f,  0.6f, 0.0f,
-		 0.7f,  0.7f, 0.0f,
-		 0.8f,  0.8f, 0.0f,
-		 0.9f,  0.9f, 0.0f,
-	};
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
@@ -91,51 +136,8 @@ int main( void )
 		// Use our shader
 		glUseProgram(programID);
 
-
-
-
-		// 1rst attribute buffer : vertices
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_lines), g_vertex_lines, GL_STATIC_DRAW);
-		glVertexAttribPointer(
-			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-			3,                  // floats per vertex
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset
-		);
-
-		// Draw the triangle !
-		glDrawArrays(GL_LINES, 0, 4); // 3 indices starting at 0 -> 1 triangle
-
-		glDisableVertexAttribArray(0);
-
-
-
-
-
-		// 1rst attribute buffer : vertices
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-		glVertexAttribPointer(
-			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset
-		);
-
-		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, 6); // 3 indices starting at 0 -> 1 triangle
-
-		glDisableVertexAttribArray(0);
-
-
-
+		processLines(vertexbuffer );
+		processTriangles(vertexbuffer );
 
 
 		// Swap buffers
