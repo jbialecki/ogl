@@ -53,19 +53,25 @@ using namespace glm;
 		-1,  1, -1,    -1,  1,  1,   1,  1, 1,
 		-1,  1, -1,     1,  1, -1,   1,  1, 1,
 	};
-
-void processPrimitives(GLuint vertexbuffer, const GLfloat *buff, int primitive_count, int vortices_per_primitive, int primitive_type)
+	static const float g_color_triangles[] = {
+		1, 0, 0,   1, 0, 0,   1, 0, 0,
+		1, 0, 0,   1, 0, 0,   1, 0, 0,
+		
+		0, 1, 0,   0, 1, 0,   0, 1, 0,
+		0, 1, 0,   0, 1, 0,   0, 1, 0,
+	};
+void processPrimitives(int vertexbufferId, int colorBufferId, const float *vertexBuff, const float *colorBuff, int primitive_count, int vortices_per_primitive, int primitive_type)
 {
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(   
-                        GL_ARRAY_BUFFER, 
-                        primitive_count * vortices_per_primitive * FLOATS_PER_VERTEX * sizeof(float), 
-                        buff, 
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbufferId);
+        glBufferData(
+                        GL_ARRAY_BUFFER,
+                        primitive_count * vortices_per_primitive * FLOATS_PER_VERTEX * sizeof(float),
+                        vertexBuff,
                         GL_STATIC_DRAW
                 );
         glVertexAttribPointer(
-                        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                        0,                  // layout
                         FLOATS_PER_VERTEX,  // floats per vertex
                         GL_FLOAT,           // type
                         GL_FALSE,           // normalized?
@@ -73,22 +79,72 @@ void processPrimitives(GLuint vertexbuffer, const GLfloat *buff, int primitive_c
                         (void*)0            // array buffer offset
                 );
 
-        glDrawArrays(   
-                        primitive_type, 
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, colorBufferId);
+        glBufferData(
+                        GL_ARRAY_BUFFER,
+                        primitive_count * vortices_per_primitive * FLOATS_PER_VERTEX * sizeof(float),
+                        colorBuff,
+                        GL_STATIC_DRAW
+                );
+        glVertexAttribPointer(
+                        1,                  // layout
+                        FLOATS_PER_VERTEX,  // floats per vertex
+                        GL_FLOAT,           // type
+                        GL_FALSE,           // normalized?
+                        0,                  // stride
+                        (void*)0            // array buffer offset
+                );
+        glDrawArrays(
+                        primitive_type,
                         0,                                              // idx of first vertex in buffer
                         primitive_count * vortices_per_primitive        // number of vortices
-                );  
+                );
+        glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(0);
 }
-void processLines(unsigned int vertexbuffer )
+void processTriangles(unsigned int vertexbufferId, unsigned int colorBufferId)
 {
-        processPrimitives(vertexbuffer, g_vertex_lines, 12, VORTICES_PER_LINE, GL_LINES);
+        processPrimitives(vertexbufferId, colorBufferId, g_vertex_triangles, g_color_triangles, 4, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
 }
 
-void processTriangles(unsigned int vertexbuffer)
-{
-        processPrimitives(vertexbuffer, g_vertex_triangles, 4, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
-}
+
+
+//void processPrimitives(GLuint vertexbuffer, const GLfloat *buff, int primitive_count, int vortices_per_primitive, int primitive_type)
+//{
+//        glEnableVertexAttribArray(0);
+//        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+//        glBufferData(   
+//                        GL_ARRAY_BUFFER, 
+//                        primitive_count * vortices_per_primitive * FLOATS_PER_VERTEX * sizeof(float), 
+//                        buff, 
+//                        GL_STATIC_DRAW
+//                );
+//        glVertexAttribPointer(
+//                        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+//                        FLOATS_PER_VERTEX,  // floats per vertex
+//                        GL_FLOAT,           // type
+//                        GL_FALSE,           // normalized?
+//                        0,                  // stride
+//                        (void*)0            // array buffer offset
+//                );
+//
+//        glDrawArrays(   
+//                        primitive_type, 
+//                        0,                                              // idx of first vertex in buffer
+//                        primitive_count * vortices_per_primitive        // number of vortices
+//                );  
+//        glDisableVertexAttribArray(0);
+//}
+//void processLines(unsigned int vertexbuffer )
+//{
+//        processPrimitives(vertexbuffer, g_vertex_lines, 12, VORTICES_PER_LINE, GL_LINES);
+//}
+//
+//void processTriangles(unsigned int vertexbuffer)
+//{
+//        processPrimitives(vertexbuffer, g_vertex_triangles, 4, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
+//}
 
 
 
@@ -158,6 +214,11 @@ int main( void )
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	// Accept fragment if it closer to the camera than the former one
+	glDepthFunc(GL_LESS);
+
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -177,14 +238,22 @@ int main( void )
 //	static const GLushort g_element_buffer_data[] = { 0, 1, 2 };
 
 */
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer);
+//	GLuint vertexbuffer;
+//	glGenBuffers(1, &vertexbuffer);
+	GLuint vertexbufferId;
+	glGenBuffers(1, &vertexbufferId);
+
+	GLuint colorbufferId;
+	glGenBuffers(1, &colorbufferId);
+
+
 //	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 //	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
 	do{
 		// Clear the screen
-		glClear( GL_COLOR_BUFFER_BIT );
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 		// Use our shader
 		glUseProgram(programID);
@@ -194,7 +263,7 @@ int main( void )
 		setView(MatrixID);
 		
 //                processLines(vertexbuffer );
-                processTriangles(vertexbuffer );
+                processTriangles(vertexbufferId, colorbufferId );
 
 
 
@@ -208,7 +277,7 @@ int main( void )
 		   glfwWindowShouldClose(window) == 0 );
 
 	// Cleanup VBO and shader
-	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &vertexbufferId);
 	glDeleteProgram(programID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
