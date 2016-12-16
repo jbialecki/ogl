@@ -37,15 +37,22 @@ using namespace glm;
 		 1,  1,  1,    -1,  1,  1,
 		 1,  1,  1,     1, -1,  1,
         };
-        static const GLfloat g_vertex_buffer_data[] = { 
-                -1.0f, -1.0f, 0.0f,
-                 1.0f, -1.0f, 0.0f,
-                 0.0f,  1.0f, 0.0f,
+//        static const GLfloat g_vertex_buffer_data[] = { 
+//                -1.0f, -1.0f, 0.0f,
+//                 1.0f, -1.0f, 0.0f,
+//                 0.0f,  1.0f, 0.0f,
+//
+//                 0.0f,  1.0f, 0.0f,
+//                -1.0f,  1.0f, 0.0f,
+//                -1.0f,  0.0f, 0.0f,
+//        };
+	static const float g_vertex_triangles[] = {
+		-1, -1, -1,    -1, -1,  1,   1, -1, 1,
+		-1, -1, -1,     1, -1, -1,   1, -1, 1,
 
-                 0.0f,  1.0f, 0.0f,
-                -1.0f,  1.0f, 0.0f,
-                -1.0f,  0.0f, 0.0f,
-        };
+		-1,  1, -1,    -1,  1,  1,   1,  1, 1,
+		-1,  1, -1,     1,  1, -1,   1,  1, 1,
+	};
 
 void processPrimitives(GLuint vertexbuffer, const GLfloat *buff, int primitive_count, int vortices_per_primitive, int primitive_type)
 {
@@ -80,7 +87,7 @@ void processLines(unsigned int vertexbuffer )
 
 void processTriangles(unsigned int vertexbuffer)
 {
-        processPrimitives(vertexbuffer, g_vertex_buffer_data, 2, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
+        processPrimitives(vertexbuffer, g_vertex_triangles, 4, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
 }
 
 
@@ -95,7 +102,7 @@ f+= 0.01;
 
 	// Camera matrix
 	glm::mat4 View       = glm::lookAt(
-						glm::vec3(3*sin(f), 2, 3*cos(f)), // Camera is at (4,3,3), in World Space
+						glm::vec3(3*sin(f), 3*cos(f), 2), // Camera is at (4,3,3), in World Space
 						glm::vec3(0,0,0), // and looks at the origin
 						glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
 					   );
@@ -186,8 +193,8 @@ int main( void )
 
 		setView(MatrixID);
 		
-                processLines(vertexbuffer );
-//                processTriangles(vertexbuffer );
+//                processLines(vertexbuffer );
+                processTriangles(vertexbuffer );
 
 
 
