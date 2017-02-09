@@ -1,5 +1,6 @@
 // Include standard headers
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -21,38 +22,53 @@ using namespace glm;
 #define VORTICES_PER_LINE 2
 #define VORTICES_PER_TRIANGLE 3
 
-        static const GLfloat g_vertex_lines[] = { 
-		-1, -1, -1,    -1, -1,  1,
-		-1,  1, -1,    -1,  1,  1,
-		 1,  1, -1,     1,  1,  1,
-		 1, -1, -1,     1, -1,  1,
+#include <list>
+#include <vector>
+using namespace std;
 
-		-1, -1, -1,    -1,  1, -1,
-		-1, -1, -1,     1, -1, -1,
-		 1,  1, -1,    -1,  1, -1,
-		 1,  1, -1,     1, -1, -1,
+class Triangle
+{
+public:
+        float x1, y1, z1;
+        float x2, y2, z2;
+        float x3, y3, z3;
+        float r1, g1, b1;
+        float r2, g2, b2;
+        float r3, g3, b3;
+};
 
-		-1, -1,  1,    -1,  1,  1,
-		-1, -1,  1,     1, -1,  1,
-		 1,  1,  1,    -1,  1,  1,
-		 1,  1,  1,     1, -1,  1,
-        };
-	static const float g_vertex_triangles[] = {
-		-1, -1, -1,    -1, -1,  1,   1, -1, 1,
-		-1, -1, -1,     1, -1, -1,   1, -1, 1,
 
-		-1,  1, -1,    -1,  1,  1,   1,  1, 1,
-		-1,  1, -1,     1,  1, -1,   1,  1, 1,
-	};
-	static const float g_color_triangles[] = {
-		1, 0, 0,   1, 0, 0,   1, 0, 0,
-		1, 0, 0,   1, 0, 0,   1, 0, 0,
-		
-		0, 1, 0,   0, 1, 0,   0, 1, 0,
-		0, 1, 0,   0, 1, 0,   0, 1, 0,
-	};
+list<Triangle> g_triangles;
+vector<float> g_triangles_vertexes;
+vector<float> g_triangles_colours;
+
+void addTriangle(Triangle &t)
+{
+        g_triangles.push_back(t);
+}
+
+void triangles2vertexes()
+{
+        g_triangles_vertexes.assign(g_triangles.size()*9, 0.0);
+        g_triangles_colours.assign(g_triangles.size()*9, 0.0);
+        int i=0;
+	for(list<Triangle>::iterator it = g_triangles.begin(); it != g_triangles.end(); it++)
+        {
+                memcpy(&g_triangles_vertexes[i], &it->x1, 9*sizeof(float));
+                memcpy(&g_triangles_colours[i], &it->r1, 9*sizeof(float));
+                i += 9;
+        }
+}
+
+Triangle t1 = {-1, -1, -1,    -1, -1,  1,   1, -1, 1,  1, 0, 0,   1, 0, 0,   1, 0, 0};
+Triangle t2 = {-1, -1, -1,     1, -1, -1,   1, -1, 1,  1, 0, 0,   1, 0, 0,   1, 0, 0};
+Triangle t3 = {-1,  1, -1,    -1,  1,  1,   1,  1, 1,  0, 1, 0,   0, 1, 0,   0, 1, 0};
+Triangle t4 = {-1,  1, -1,     1,  1, -1,   1,  1, 1,  0, 1, 0,   0, 1, 0,   0, 1, 0};
+
 void processPrimitives(int vertexbufferId, int colorBufferId, const float *vertexBuff, const float *colorBuff, int primitive_count, int vortices_per_primitive, int primitive_type)
 {
+	if(primitive_count == 0)
+		return;
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbufferId);
         glBufferData(
@@ -96,7 +112,8 @@ void processPrimitives(int vertexbufferId, int colorBufferId, const float *verte
 }
 void processTriangles(unsigned int vertexbufferId, unsigned int colorBufferId)
 {
-        processPrimitives(vertexbufferId, colorBufferId, g_vertex_triangles, g_color_triangles, 4, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
+//        processPrimitives(vertexbufferId, colorBufferId, g_vertex_triangles, g_color_triangles, 4, VORTICES_PER_TRIANGLE, GL_TRIANGLES);
+        processPrimitives(vertexbufferId, colorBufferId, &g_triangles_vertexes[0], &g_triangles_colours[0], g_triangles.size(), VORTICES_PER_TRIANGLE, GL_TRIANGLES);
 }
 
 
@@ -187,6 +204,12 @@ int main( void )
 
 	GLuint colorbufferId;
 	glGenBuffers(1, &colorbufferId);
+
+	addTriangle(t1);
+	addTriangle(t2);
+	addTriangle(t3);
+	addTriangle(t4);
+	triangles2vertexes();
 
 	do{
 		// Clear the screen
