@@ -87,6 +87,8 @@ create_default_target_launcher(tutorial02_red_triangle WORKING_DIRECTORY "${CMAK
 # Tutorial 3
 add_executable(tutorial03_matrices 
 	tutorial03_matrices/tutorial03.cpp
+	tutorial03_matrices/gr3d.cpp
+	tutorial03_matrices/gr3d.h
 	common/shader.cpp
 	common/shader.hpp
 
