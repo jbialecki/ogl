@@ -28,6 +28,7 @@ public:
         float r3, g3, b3;
 };
 
+
 list<Triangle> g_triangles;
 vector<float> g_triangles_vertexes;
 vector<float> g_triangles_colours;
