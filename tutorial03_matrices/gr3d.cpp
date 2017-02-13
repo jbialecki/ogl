@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <list>
 #include <vector>
 #include <math.h>
@@ -9,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <common/shader.hpp>
+#include "gr3d.h"
 
 #define FLOATS_PER_VERTEX 3
 #define VORTICES_PER_LINE 2
@@ -44,6 +46,25 @@ void addTriangle(float x1, float y1, float z1,
 	memcpy(&t.x1, &x1, 18*sizeof(float));
 	g_triangles.push_back(t);
 }
+void addTriangle(float x1, float y1, float z1,
+                 float x2, float y2, float z2,
+                 float x3, float y3, float z3,
+                 struct Color *c)
+{
+	if(c == NULL)
+	{
+		printf("ERROR: addTriangle(color==NULL)\n");
+	}
+	addTriangle(	x1, y1, z1,
+			x2, y2, z2,
+			x3, y3, z3,
+			c->r, c->g, c->b,
+			c->r, c->g, c->b,
+			c->r, c->g, c->b
+		);
+}
+
+
 void triangles2vertexes()
 {
         g_triangles_vertexes.assign(g_triangles.size()*9, 0.0);
