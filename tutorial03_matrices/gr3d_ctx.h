@@ -36,8 +36,10 @@ private:
 	unsigned int VertexArrayID;
 	int programID;
 	int MatrixID;
-	unsigned int vertexbufferId;
-	unsigned int colorbufferId;
+	unsigned int linesVertexBuffId;
+	unsigned int linesColorBuffId;
+	unsigned int trianglesVertexBuffId;
+	unsigned int trianglesColorBuffId;
 
 	// other functions
 	void setView(int MatrixID);

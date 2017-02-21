@@ -115,10 +115,13 @@ bool Gr3dCtx::intGraphics()
         // Get a handle for our "MVP" uniform
         MatrixID = glGetUniformLocation(programID, "MVP");
 
-        glGenBuffers(1, &vertexbufferId);
-        glGenBuffers(1, &colorbufferId);
+        glGenBuffers(1, &linesVertexBuffId);
+        glGenBuffers(1, &linesColorBuffId);
+        glGenBuffers(1, &trianglesVertexBuffId);
+        glGenBuffers(1, &trianglesColorBuffId);
 
 	triangles2vertexes();
+	lines2vertexes();
 
         do{
                 // Clear the screen
@@ -132,8 +135,8 @@ bool Gr3dCtx::intGraphics()
 
                 setView(MatrixID);
 
-//                processLines(vertexbuffer );
-                processTriangles(vertexbufferId, colorbufferId );
+                processLines(linesVertexBuffId, linesColorBuffId );
+                processTriangles(trianglesVertexBuffId, trianglesColorBuffId );
 
 
 
@@ -147,7 +150,10 @@ bool Gr3dCtx::intGraphics()
                    glfwWindowShouldClose(window) == 0 );
 
         // Cleanup VBO and shader
-        glDeleteBuffers(1, &vertexbufferId);
+        glDeleteBuffers(1, &linesVertexBuffId);
+        glDeleteBuffers(1, &linesColorBuffId);
+        glDeleteBuffers(1, &trianglesVertexBuffId);
+        glDeleteBuffers(1, &trianglesColorBuffId);
         glDeleteProgram(programID);
         glDeleteVertexArrays(1, &VertexArrayID);
 

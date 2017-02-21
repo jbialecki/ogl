@@ -25,10 +25,17 @@ int main( void )
 {
 	struct Color red {1, 0, 0};
 	struct Color green {0, 1, 0};
+	struct Color white {1, 1, 1};
+	
 	addTriangle(-1, -1, -1,    -1, -1,  1,   1, -1, 1,  &red);
 	addTriangle(-1, -1, -1,     1, -1, -1,   1, -1, 1,  &red);
 	addTriangle(-1,  1, -1,    -1,  1,  1,   1,  1, 1,  &green);
 	addTriangle(-1,  1, -1,     1,  1, -1,   1,  1, 1,  &green);
+
+	addLine(-1, 0, -1,   -1, 0,  1, &white);
+	addLine(-1, 0,  1,    1, 0,  1, &white);
+	addLine( 1, 0,  1,    1, 0, -1, &white);
+	addLine( 1, 0, -1,   -1, 0, -1, &white);
 
 	Gr3dCtx ctx;
 	if(!ctx.intGraphics())
