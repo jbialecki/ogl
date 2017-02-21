@@ -53,29 +53,8 @@ vector<float> g_triangles_colours;
 vector<float> g_lines_vertexes;
 vector<float> g_lines_colours;
 
-void getNormal(const Triangle &in, Vect &out)
-{
-	Vect a, b;	// edges
-	float len;
 
-	a.x = in.x2 - in.x1;
-	a.y = in.y2 - in.y1;
-	a.z = in.z2 - in.z1;
 
-	b.x = in.x3 - in.x1;
-	b.y = in.y3 - in.y1;
-	b.z = in.z3 - in.z1;
-
-	out.x = a.y*b.z - a.z*b.y;
-	out.y = a.z*b.x - a.x*b.z;
-	out.z = a.x*b.y - a.y*b.x;
-
-	len = sqrt(out.x*out.x + out.y*out.y + out.z*out.z);
-
-	out.x /= len;
-	out.y /= len;
-	out.z /= len;
-}
 
 void addTriangle(float x1, float y1, float z1, 
                  float x2, float y2, float z2,
@@ -210,3 +189,42 @@ void processTriangles(unsigned int vertexbufferId, unsigned int colorBufferId)
 
 
 
+void getNormal(const Triangle &in, Vect &out)
+{
+	Vect a, b;	// edges
+	float len;
+
+	a.x = in.x2 - in.x1;
+	a.y = in.y2 - in.y1;
+	a.z = in.z2 - in.z1;
+
+	b.x = in.x3 - in.x1;
+	b.y = in.y3 - in.y1;
+	b.z = in.z3 - in.z1;
+
+	out.x = a.y*b.z - a.z*b.y;
+	out.y = a.z*b.x - a.x*b.z;
+	out.z = a.x*b.y - a.y*b.x;
+
+	len = sqrt(out.x*out.x + out.y*out.y + out.z*out.z);
+
+	out.x /= len;
+	out.y /= len;
+	out.z /= len;
+}
+void getCenter(const Triangle &in, Vect &out)
+{
+	out.x = (in.x1+in.x2+in.x3)/3;
+	out.y = (in.y1+in.y2+in.y3)/3;
+	out.z = (in.z1+in.z2+in.z3)/3;
+}
+void addNormals(struct Color *color)
+{
+        for(list<Triangle>::iterator it = g_triangles.begin(); it != g_triangles.end(); it++)
+	{
+		Vect n, c;
+		getNormal(*it, n);
+		getCenter(*it, c);
+		addLine(c.x, c.y, c.z, c.x+n.x, c.y+n.y, c.z+n.z, color);
+	}
+}

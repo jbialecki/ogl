@@ -15,7 +15,7 @@ using namespace glm;
 void getView_defaultCallback(Gr3dView &v)
 {
 	static float f = 0.0;
-	f+= 0.01;
+	f+= 0.002;
 //glm::vec3(3*sin(f), 3*cos(f), 2), // Camera is at (4,3,3), in World Space
 //glm::vec3(0,0,0), // and looks at the origin
 //glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)

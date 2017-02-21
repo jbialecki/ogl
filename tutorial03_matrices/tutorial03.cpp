@@ -36,6 +36,8 @@ int main( void )
 	addLine(-1, 0,  1,    1, 0,  1, &white);
 	addLine( 1, 0,  1,    1, 0, -1, &white);
 	addLine( 1, 0, -1,   -1, 0, -1, &white);
+	
+	addNormals(&white);
 
 	Gr3dCtx ctx;
 	if(!ctx.intGraphics())
