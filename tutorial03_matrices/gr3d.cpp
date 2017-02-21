@@ -29,11 +29,40 @@ public:
         float r2, g2, b2;
         float r3, g3, b3;
 };
+class Vect
+{
+public:
+	float x, y, z;
+};
 
 
 list<Triangle> g_triangles;
 vector<float> g_triangles_vertexes;
 vector<float> g_triangles_colours;
+
+void getNormal(const Triangle &in, Vect &out)
+{
+	Vect a, b;	// edges
+	float len;
+
+	a.x = in.x2 - in.x1;
+	a.y = in.y2 - in.y1;
+	a.z = in.z2 - in.z1;
+
+	b.x = in.x3 - in.x1;
+	b.y = in.y3 - in.y1;
+	b.z = in.z3 - in.z1;
+
+	out.x = a.y*b.z - a.z*b.y;
+	out.y = a.z*b.x - a.x*b.z;
+	out.z = a.x*b.y - a.y*b.x;
+
+	len = sqrt(out.x*out.x + out.y*out.y + out.z*out.z);
+
+	out.x /= len;
+	out.y /= len;
+	out.z /= len;
+}
 
 void addTriangle(float x1, float y1, float z1, 
                  float x2, float y2, float z2,
