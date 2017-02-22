@@ -91,6 +91,8 @@ add_executable(tutorial03_matrices
 	tutorial03_matrices/gr3d.h
 	tutorial03_matrices/gr3d_ctx.cpp
 	tutorial03_matrices/gr3d_ctx.h
+	tutorial03_matrices/constructed.cpp
+	tutorial03_matrices/constructed.h
 	common/shader.cpp
 	common/shader.hpp
 

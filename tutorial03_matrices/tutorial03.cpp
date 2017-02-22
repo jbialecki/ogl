@@ -17,25 +17,33 @@ using namespace glm;
 #include <common/shader.hpp>
 #include "gr3d.h"
 #include "gr3d_ctx.h"
-
+#include "constructed.h"
 
 
 
 int main( void )
 {
-	struct Color red {1, 0, 0};
-	struct Color green {0, 1, 0};
-	struct Color white {1, 1, 1};
+	struct Color red     {1, 0, 0};
+	struct Color green   {0, 1, 0};
+	struct Color yellow  {1, 1, 0};
+	struct Color pink    {1, 0, 1};
+	struct Color XX      {0, 1, 1};
+	struct Color white   {1, 1, 1};
 	
 	addTriangle(-1, -1, -1,    -1, -1,  1,   1, -1, 1,  &red);
 	addTriangle(-1, -1, -1,     1, -1, -1,   1, -1, 1,  &red);
 	addTriangle(-1,  1, -1,    -1,  1,  1,   1,  1, 1,  &green);
 	addTriangle(-1,  1, -1,     1,  1, -1,   1,  1, 1,  &green);
 
-	addLine(-1, 0, -1,   -1, 0,  1, &white);
+	addOrientedRectangleX(0, -1, 1, -1, 1, &yellow);
+	addOrientedRectangleY(-1, 1, 0, -1, 1, &pink);
+	addOrientedRectangleZ(-1, 1, -1, 1, 0, &XX);
+
+/*	addLine(-1, 0, -1,   -1, 0,  1, &white);
 	addLine(-1, 0,  1,    1, 0,  1, &white);
 	addLine( 1, 0,  1,    1, 0, -1, &white);
 	addLine( 1, 0, -1,   -1, 0, -1, &white);
+*/
 	
 	addNormals(&white);
 
