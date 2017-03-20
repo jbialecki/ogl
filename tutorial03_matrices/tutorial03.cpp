@@ -45,7 +45,7 @@ int main( void )
 	struct Color XX      {0, 1, 1};
 	struct Color white   {1, 1, 1};
 	
-	addLightVector(1, 0.5, 0);
+	addLightVector(1, -0.5, 0);
 
 	addOrientedRectangleZ(-15, 15, -15, 15, 0, &green);
 
@@ -59,20 +59,11 @@ int main( void )
 	addOrientedCuboid(-9.5, -6.5,   -6,    6, 0, 3, &yellow);
 	addOrientedCuboid( 6.5,  9.5,   -6,    6, 0, 3, &yellow);
 
-//	addTriangle(-1, -1, -1,    -1, -1,  1,   1, -1, 1,  &red);
-//	addTriangle(-1, -1, -1,     1, -1, -1,   1, -1, 1,  &red);
-//	addTriangle(-1,  1, -1,    -1,  1,  1,   1,  1, 1,  &green);
-//	addTriangle(-1,  1, -1,     1,  1, -1,   1,  1, 1,  &green);
-//
-//	addOrientedRectangleX(0, -1, 1, -1, 1, &yellow);
-//	addOrientedRectangleY(-1, 1, 0, -1, 1, &pink);
-//	addOrientedRectangleZ(-1, 1, -1, 1, 0, &XX);
+	addOrientedPyramidZ( -10.5, -5.5, -10.5, -5.5, 8, 15, &red);
+	addOrientedPyramidZ( -10.5, -5.5,   5.5, 10.5, 8, 15, &red);
+	addOrientedPyramidZ(   5.5, 10.5,   5.5, 10.5, 8, 15, &red);
+	addOrientedPyramidZ(   5.5, 10.5, -10.5, -5.5, 8, 15, &red);
 
-/*	addLine(-1, 0, -1,   -1, 0,  1, &white);
-	addLine(-1, 0,  1,    1, 0,  1, &white);
-	addLine( 1, 0,  1,    1, 0, -1, &white);
-	addLine( 1, 0, -1,   -1, 0, -1, &white);
-*/
 	
 //	addNormals(&white);
 

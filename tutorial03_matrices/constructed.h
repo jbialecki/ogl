@@ -22,4 +22,10 @@ void addOrientedCuboid(	float x1, float x2,
 			float y1, float y2,
 			float z1, float z2,
 			struct Color *c);
+
+void addOrientedPyramidZ(	float x1, float x2,
+	                        float y1, float y2,
+        	                float z_base, float z_top,
+                	        struct Color *c);
+
 #endif
