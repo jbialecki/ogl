@@ -39,6 +39,11 @@ Gr3dCtx::Gr3dCtx()
 	b_bkg = 0.4;
 	getView_callback = getView_defaultCallback;
 }
+void Gr3dCtx::setGetViewCallback( void(*callback)(Gr3dView&) )
+{
+	getView_callback = callback;
+}
+
 void Gr3dCtx::setView(int MatrixID)
 {
 	static Gr3dView v;

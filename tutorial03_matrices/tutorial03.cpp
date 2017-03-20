@@ -20,6 +20,21 @@ using namespace glm;
 #include "constructed.h"
 
 
+void getView_callback(Gr3dView &v)
+{
+        static float f = 0.0;
+        f+= 0.002;
+        v.camera_x = 30*sin(f);
+        v.camera_y = 30*cos(f);
+        v.camera_z = 20;
+        v.lookAt_x = 0;
+        v.lookAt_y = 0;
+        v.lookAt_z = 0;
+        v.upDir_x = 0;
+        v.upDir_y = 0;
+        v.upDir_z = 1;
+}
+
 
 int main( void )
 {
@@ -31,7 +46,19 @@ int main( void )
 	struct Color white   {1, 1, 1};
 	
 	addLightVector(1, 0.5, 0);
-	addOrientedCuboid(-1, 1, -1, 1, -1, 1, &red);
+
+	addOrientedRectangleZ(-15, 15, -15, 15, 0, &green);
+
+	addOrientedCuboid(-10, -6, -10, -6, 0, 8, &yellow);
+	addOrientedCuboid(-10, -6,   6, 10, 0, 8, &yellow);
+	addOrientedCuboid(  6, 10, -10, -6, 0, 8, &yellow);
+	addOrientedCuboid(  6, 10,   6, 10, 0, 8, &yellow);
+
+	addOrientedCuboid(  -6,    6, -9.5, -6.5, 0, 3, &yellow);
+	addOrientedCuboid(  -6,    6,  6.5,  9.5, 0, 3, &yellow);
+	addOrientedCuboid(-9.5, -6.5,   -6,    6, 0, 3, &yellow);
+	addOrientedCuboid( 6.5,  9.5,   -6,    6, 0, 3, &yellow);
+
 //	addTriangle(-1, -1, -1,    -1, -1,  1,   1, -1, 1,  &red);
 //	addTriangle(-1, -1, -1,     1, -1, -1,   1, -1, 1,  &red);
 //	addTriangle(-1,  1, -1,    -1,  1,  1,   1,  1, 1,  &green);
@@ -47,9 +74,10 @@ int main( void )
 	addLine( 1, 0, -1,   -1, 0, -1, &white);
 */
 	
-	addNormals(&white);
+//	addNormals(&white);
 
 	Gr3dCtx ctx;
+	ctx.setGetViewCallback(getView_callback);
 	if(!ctx.intGraphics())
 		return -1;
 

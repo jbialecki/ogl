@@ -16,6 +16,7 @@ class Gr3dCtx
 {
 public:
 	Gr3dCtx();
+	void setGetViewCallback( void(*)(Gr3dView&) );
 	bool intGraphics();
 	
 
