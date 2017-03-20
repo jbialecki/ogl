@@ -28,3 +28,15 @@ void addOrientedRectangleZ(	float x1, float x2,
 }
 	
 
+void addOrientedCuboid( float x1, float x2,
+                        float y1, float y2,
+                        float z1, float z2,
+                        struct Color *c)
+{
+	addOrientedRectangleX(x1, y2, y1, z1, z2, c);
+	addOrientedRectangleX(x2, y1, y2, z1, z2, c);
+	addOrientedRectangleY(x1, x2, y1, z1, z2, c);
+	addOrientedRectangleY(x2, x1, y2, z1, z2, c);
+	addOrientedRectangleZ(x2, x1, y1, y2, z1, c);
+	addOrientedRectangleZ(x1, x2, y1, y2, z2, c);
+}

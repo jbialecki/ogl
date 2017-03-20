@@ -30,14 +30,16 @@ int main( void )
 	struct Color XX      {0, 1, 1};
 	struct Color white   {1, 1, 1};
 	
-	addTriangle(-1, -1, -1,    -1, -1,  1,   1, -1, 1,  &red);
-	addTriangle(-1, -1, -1,     1, -1, -1,   1, -1, 1,  &red);
-	addTriangle(-1,  1, -1,    -1,  1,  1,   1,  1, 1,  &green);
-	addTriangle(-1,  1, -1,     1,  1, -1,   1,  1, 1,  &green);
-
-	addOrientedRectangleX(0, -1, 1, -1, 1, &yellow);
-	addOrientedRectangleY(-1, 1, 0, -1, 1, &pink);
-	addOrientedRectangleZ(-1, 1, -1, 1, 0, &XX);
+	addLightVector(1, 0.5, 0);
+	addOrientedCuboid(-1, 1, -1, 1, -1, 1, &red);
+//	addTriangle(-1, -1, -1,    -1, -1,  1,   1, -1, 1,  &red);
+//	addTriangle(-1, -1, -1,     1, -1, -1,   1, -1, 1,  &red);
+//	addTriangle(-1,  1, -1,    -1,  1,  1,   1,  1, 1,  &green);
+//	addTriangle(-1,  1, -1,     1,  1, -1,   1,  1, 1,  &green);
+//
+//	addOrientedRectangleX(0, -1, 1, -1, 1, &yellow);
+//	addOrientedRectangleY(-1, 1, 0, -1, 1, &pink);
+//	addOrientedRectangleZ(-1, 1, -1, 1, 0, &XX);
 
 /*	addLine(-1, 0, -1,   -1, 0,  1, &white);
 	addLine(-1, 0,  1,    1, 0,  1, &white);

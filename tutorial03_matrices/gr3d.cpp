@@ -43,6 +43,7 @@ public:
 	float x, y, z;
 };
 
+Vect g_light;
 
 list<Triangle> g_triangles;
 list<Line> g_lines;
@@ -53,7 +54,13 @@ vector<float> g_triangles_colours;
 vector<float> g_lines_vertexes;
 vector<float> g_lines_colours;
 
-
+void addLightVector(float x, float y, float z)
+{
+	float len = sqrt(x*x+y*y+z*z);
+	g_light.x = x/len;
+	g_light.y = y/len;
+	g_light.z = z/len;
+}
 
 
 void addTriangle(float x1, float y1, float z1, 
@@ -108,6 +115,45 @@ void addLine(float x1, float y1, float z1,
 		);
 }
 
+void getNormal(const Triangle &in, Vect &out)
+{
+	Vect a, b;	// edges
+	float len;
+
+	a.x = in.x2 - in.x1;
+	a.y = in.y2 - in.y1;
+	a.z = in.z2 - in.z1;
+
+	b.x = in.x3 - in.x1;
+	b.y = in.y3 - in.y1;
+	b.z = in.z3 - in.z1;
+
+	out.x = a.y*b.z - a.z*b.y;
+	out.y = a.z*b.x - a.x*b.z;
+	out.z = a.x*b.y - a.y*b.x;
+
+	len = sqrt(out.x*out.x + out.y*out.y + out.z*out.z);
+
+	out.x /= len;
+	out.y /= len;
+	out.z /= len;
+}
+void getCenter(const Triangle &in, Vect &out)
+{
+	out.x = (in.x1+in.x2+in.x3)/3;
+	out.y = (in.y1+in.y2+in.y3)/3;
+	out.z = (in.z1+in.z2+in.z3)/3;
+}
+void addNormals(struct Color *color)
+{
+        for(list<Triangle>::iterator it = g_triangles.begin(); it != g_triangles.end(); it++)
+	{
+		Vect n, c;
+		getNormal(*it, n);
+		getCenter(*it, c);
+		addLine(c.x, c.y, c.z, c.x+n.x, c.y+n.y, c.z+n.z, color);
+	}
+}
 
 void triangles2vertexes()
 {
@@ -116,8 +162,18 @@ void triangles2vertexes()
         int i=0;
         for(list<Triangle>::iterator it = g_triangles.begin(); it != g_triangles.end(); it++)
         {
+		// copy vertexes coordinates
                 memcpy(&g_triangles_vertexes[i], &it->x1, 9*sizeof(float));
-                memcpy(&g_triangles_colours[i], &it->r1, 9*sizeof(float));
+
+		// modification and copy vertexes colours
+		Vect n;
+		getNormal(*it, n);
+		float product = g_light.x*n.x + g_light.y*n.y + g_light.z*n.z;
+		float coeff = (product+1)/2.0; // normalize: 0 <= coeff <= 1
+		float *vetexColourTab = &it->r1;
+		for(int k=0; k<9; k++)
+			g_triangles_colours[i+k] = vetexColourTab[k]*coeff;
+                //memcpy(&g_triangles_colours[i], &it->r1, 9*sizeof(float));
                 i += 9;
         }
 }
@@ -189,42 +245,3 @@ void processTriangles(unsigned int vertexbufferId, unsigned int colorBufferId)
 
 
 
-void getNormal(const Triangle &in, Vect &out)
-{
-	Vect a, b;	// edges
-	float len;
-
-	a.x = in.x2 - in.x1;
-	a.y = in.y2 - in.y1;
-	a.z = in.z2 - in.z1;
-
-	b.x = in.x3 - in.x1;
-	b.y = in.y3 - in.y1;
-	b.z = in.z3 - in.z1;
-
-	out.x = a.y*b.z - a.z*b.y;
-	out.y = a.z*b.x - a.x*b.z;
-	out.z = a.x*b.y - a.y*b.x;
-
-	len = sqrt(out.x*out.x + out.y*out.y + out.z*out.z);
-
-	out.x /= len;
-	out.y /= len;
-	out.z /= len;
-}
-void getCenter(const Triangle &in, Vect &out)
-{
-	out.x = (in.x1+in.x2+in.x3)/3;
-	out.y = (in.y1+in.y2+in.y3)/3;
-	out.z = (in.z1+in.z2+in.z3)/3;
-}
-void addNormals(struct Color *color)
-{
-        for(list<Triangle>::iterator it = g_triangles.begin(); it != g_triangles.end(); it++)
-	{
-		Vect n, c;
-		getNormal(*it, n);
-		getCenter(*it, c);
-		addLine(c.x, c.y, c.z, c.x+n.x, c.y+n.y, c.z+n.z, color);
-	}
-}
