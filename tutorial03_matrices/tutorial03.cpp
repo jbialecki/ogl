@@ -18,6 +18,7 @@ using namespace glm;
 #include "gr3d.h"
 #include "gr3d_ctx.h"
 #include "constructed.h"
+#include "constructed2.h"
 
 
 void getView_callback(Gr3dView &v)
@@ -47,7 +48,9 @@ int main( void )
 	
 	addLightVector(1, -0.5, 0);
 
-	addOrientedRectangleZ(-15, 15, -15, 15, 0, &green);
+	//addOrientedRectangleZ(-15, 15, -15, 15, 0, &green);
+	Polygon grass = mkRectangleZ(-15, 15, -15, 15, 0);
+	grass.render(green);
 
 	addOrientedCuboid(-10, -6, -10, -6, 0, 8, &yellow);
 	addOrientedCuboid(-10, -6,   6, 10, 0, 8, &yellow);
