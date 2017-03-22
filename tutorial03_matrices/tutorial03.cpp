@@ -49,26 +49,38 @@ int main( void )
 	addLightVector(1, -0.5, 0);
 
 	//addOrientedRectangleZ(-15, 15, -15, 15, 0, &green);
-	Polygon grass = mkRectangleZ(-15, 15, -15, 15, 0);
-	grass.render(green);
+//	Polygon grass = mkRectangleZ(-15, 15, -15, 15, 0);
+//	grass.render(green);
+	
+	Polyhedron tower = mkCuboid(4, 4, 8).translate(Vector(0, 0, 4));
+	tower.translate(Vector(-8, -8, 0)).render(XX);
+	tower.translate(Vector(-8,  8, 0)).render(XX);
+	tower.translate(Vector( 8, -8, 0)).render(XX);
+	tower.translate(Vector( 8,  8, 0)).render(XX);
 
-	addOrientedCuboid(-10, -6, -10, -6, 0, 8, &yellow);
-	addOrientedCuboid(-10, -6,   6, 10, 0, 8, &yellow);
-	addOrientedCuboid(  6, 10, -10, -6, 0, 8, &yellow);
-	addOrientedCuboid(  6, 10,   6, 10, 0, 8, &yellow);
+	Polyhedron wall = mkCuboid(12, 3, 3).translate(Vector(0, 0, 1.5));
+	wall.translate(Vector(0,  8, 0)).render(pink);
+	wall.translate(Vector(0, -8, 0)).render(pink);
+	wall.rotateZ(3.1415/2.).translate(Vector( 8, 0, 0)).render(pink);
+	wall.rotateZ(3.1415/2.).translate(Vector(-8, 0, 0)).render(pink);
 
-	addOrientedCuboid(  -6,    6, -9.5, -6.5, 0, 3, &yellow);
-	addOrientedCuboid(  -6,    6,  6.5,  9.5, 0, 3, &yellow);
-	addOrientedCuboid(-9.5, -6.5,   -6,    6, 0, 3, &yellow);
-	addOrientedCuboid( 6.5,  9.5,   -6,    6, 0, 3, &yellow);
+//	addOrientedCuboid(-10, -6, -10, -6, 0, 8, &yellow);
+//	addOrientedCuboid(-10, -6,   6, 10, 0, 8, &yellow);
+//	addOrientedCuboid(  6, 10, -10, -6, 0, 8, &yellow);
+//	addOrientedCuboid(  6, 10,   6, 10, 0, 8, &yellow);
 
-	addOrientedPyramidZ( -10.5, -5.5, -10.5, -5.5, 8, 15, &red);
-	addOrientedPyramidZ( -10.5, -5.5,   5.5, 10.5, 8, 15, &red);
-	addOrientedPyramidZ(   5.5, 10.5,   5.5, 10.5, 8, 15, &red);
-	addOrientedPyramidZ(   5.5, 10.5, -10.5, -5.5, 8, 15, &red);
+//	addOrientedCuboid(  -6,    6, -9.5, -6.5, 0, 3, &yellow);
+//	addOrientedCuboid(  -6,    6,  6.5,  9.5, 0, 3, &yellow);
+//	addOrientedCuboid(-9.5, -6.5,   -6,    6, 0, 3, &yellow);
+//	addOrientedCuboid( 6.5,  9.5,   -6,    6, 0, 3, &yellow);
+//
+//	addOrientedPyramidZ( -10.5, -5.5, -10.5, -5.5, 8, 15, &red);
+//	addOrientedPyramidZ( -10.5, -5.5,   5.5, 10.5, 8, 15, &red);
+//	addOrientedPyramidZ(   5.5, 10.5,   5.5, 10.5, 8, 15, &red);
+//	addOrientedPyramidZ(   5.5, 10.5, -10.5, -5.5, 8, 15, &red);
 
 	
-//	addNormals(&white);
+	addNormals(&white);
 
 	Gr3dCtx ctx;
 	ctx.setGetViewCallback(getView_callback);
