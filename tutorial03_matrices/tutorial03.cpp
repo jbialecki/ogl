@@ -47,6 +47,7 @@ int main( void )
 	struct Color white   {1, 1, 1};
 	
 	addLightVector(1, -0.5, 0);
+	addLine(0, 0, 0, 20, 0, 0, &white);
 
 	//addOrientedRectangleZ(-15, 15, -15, 15, 0, &green);
 //	Polygon grass = mkRectangleZ(-15, 15, -15, 15, 0);
@@ -61,8 +62,14 @@ int main( void )
 	Polyhedron wall = mkCuboid(12, 3, 3).translate(Vector(0, 0, 1.5));
 	wall.translate(Vector(0,  8, 0)).render(pink);
 	wall.translate(Vector(0, -8, 0)).render(pink);
-	wall.rotateZ(3.1415/2.).translate(Vector( 8, 0, 0)).render(pink);
-	wall.rotateZ(3.1415/2.).translate(Vector(-8, 0, 0)).render(pink);
+	wall.rotateZ(Pi/2).translate(Vector( 8, 0, 0)).render(pink);
+	wall.rotateZ(Pi/2).translate(Vector(-8, 0, 0)).render(pink);
+
+	Polyhedron wallRoof = mkPrism(mkIsoscelesTriangleZ(4, 3).rotateX(Pi/2), Vector(0, -12, 0)).translate(Vector(0, 6, 3));
+	wallRoof.translate(Vector( 8, 0, 0)).render(yellow);
+	wallRoof.translate(Vector(-8, 0, 0)).render(yellow);
+	wallRoof.rotateZ(Pi/2).translate(Vector(0, -8, 0)).render(yellow);
+	wallRoof.rotateZ(Pi/2).translate(Vector(0,  8, 0)).render(yellow);
 
 //	addOrientedCuboid(-10, -6, -10, -6, 0, 8, &yellow);
 //	addOrientedCuboid(-10, -6,   6, 10, 0, 8, &yellow);

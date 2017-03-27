@@ -16,6 +16,14 @@ Vertex Vertex::translate(const Vector &v) const
 {
 	return Vertex(x+v.x, y+v.y, z+v.z);
 }
+Vertex Vertex::rotateX(float angle) const
+{
+	return Vertex(x, y*cos(angle)-z*sin(angle), z*cos(angle)+y*sin(angle));
+}
+Vertex Vertex::rotateY(float angle) const
+{
+	return Vertex(x*cos(angle)-z*sin(angle), y, z*cos(angle)+x*sin(angle));
+}
 Vertex Vertex::rotateZ(float angle) const
 {
 	return Vertex(x*cos(angle)-y*sin(angle), y*cos(angle)+x*sin(angle), z);
@@ -66,6 +74,20 @@ Polygon Polygon::translate(const Vector &v) const
 		p.vertexes.push_back(it->translate(v));
 	return p;
 }
+Polygon Polygon::rotateX(float angle) const
+{
+        Polygon p;
+        for(list<Vertex>::const_iterator it=vertexes.begin(); it!=vertexes.end(); it++)
+                p.vertexes.push_back(it->rotateX(angle));
+        return p;
+}
+Polygon Polygon::rotateY(float angle) const
+{
+        Polygon p;
+        for(list<Vertex>::const_iterator it=vertexes.begin(); it!=vertexes.end(); it++)
+                p.vertexes.push_back(it->rotateY(angle));
+        return p;
+}
 Polygon Polygon::rotateZ(float angle) const
 {
         Polygon p;
@@ -85,11 +107,33 @@ Polyhedron Polyhedron::translate(const Vector &v) const
 		p.faces.push_back(it->translate(v));
 	return p;
 }
+Polyhedron Polyhedron::rotateX(float angle) const
+{
+	Polyhedron p;
+	for(list<Polygon>::const_iterator it=faces.begin(); it!=faces.end(); it++)
+		p.faces.push_back(it->rotateX(angle));
+	return p;
+}
+Polyhedron Polyhedron::rotateY(float angle) const
+{
+	Polyhedron p;
+	for(list<Polygon>::const_iterator it=faces.begin(); it!=faces.end(); it++)
+		p.faces.push_back(it->rotateY(angle));
+	return p;
+}
 Polyhedron Polyhedron::rotateZ(float angle) const
 {
 	Polyhedron p;
 	for(list<Polygon>::const_iterator it=faces.begin(); it!=faces.end(); it++)
 		p.faces.push_back(it->rotateZ(angle));
+	return p;
+}
+Polygon mkIsoscelesTriangleZ(float baseX, float heightY)
+{
+	Polygon p;
+	p.vertexes.push_back(Vertex(-baseX/2,      0, 0));
+	p.vertexes.push_back(Vertex( baseX/2,      0, 0));
+	p.vertexes.push_back(Vertex(      0, heightY, 0));
 	return p;
 }
 Polygon mkRectangleZ(float sizeX, float sizeY)
