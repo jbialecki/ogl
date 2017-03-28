@@ -102,6 +102,7 @@ add_executable(tutorial03_matrices
 	tutorial03_matrices/SingleColor.fragmentshader
 )
 #set_target_properties(tutorial03_matrices PROPERTIES RUNTIME_OUTPUT_DIRECTORY /test1)
+set_target_properties(tutorial03_matrices PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON CXX_EXTENSION OFF) 
 target_link_libraries(tutorial03_matrices
 	${ALL_LIBS}
 )
