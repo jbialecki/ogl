@@ -12,6 +12,60 @@ Vertex::Vertex(float _x, float _y, float _z)
 	y = _y;
 	z = _z;
 }
+Vertex::Vertex(float p, float q, Plane plane)
+{
+	switch(plane)
+	{
+	case Plane::XY:
+		x = p;
+		y = q;
+		z = 0;
+		break;
+	case Plane::XZ:
+		x = p;
+		y = 0;
+		z = q;
+		break;
+	case Plane::YZ:
+		x = 0;
+		y = p;
+		z = q;
+		break;
+	}
+}
+float Vertex::get(Axis axis) const
+{
+	switch(axis)
+	{
+	case Axis::X:
+		return x;
+	case Axis::Y:
+		return y;
+	case Axis::Z:
+		return z;
+	}
+}
+void Vertex::set(float p, Axis axis)
+{
+	switch(axis)
+	{
+	case Axis::X:
+		x = p;
+		return;
+	case Axis::Y:
+		y = p;
+		return;
+	case Axis::Z:
+		z = p;
+		return;
+	}
+}
+Vertex Vertex::translate(float p, Axis axis) const
+{
+	Vertex v = *this;
+	v.set(p+v.get(axis), axis);
+	return v;
+}
 Vertex Vertex::translate(const Vector &v) const
 {
 	return Vertex(x+v.x, y+v.y, z+v.z);
@@ -67,6 +121,13 @@ Polygon Polygon::revertVertexSequence() const
 		p.vertexes.push_back(*it);
 	return p;
 }
+Polygon Polygon::translate(float p, Axis axis) const
+{
+	Polygon ret;
+	for(const Vertex &v : vertexes)
+		ret.vertexes.push_back(v.translate(p, axis));
+	return ret;
+}
 Polygon Polygon::translate(const Vector &v) const
 {
 	Polygon p;
@@ -95,10 +156,40 @@ Polygon Polygon::rotateZ(float angle) const
                 p.vertexes.push_back(it->rotateZ(angle));
         return p;
 }
+Polygon Polygon::adjust(Axis axis, Adjust a, float p) const
+{
+	float min = vertexes.front().get(axis);
+	float max = min;
+	
+	for(const Vertex &v : vertexes)
+	{
+		float f = v.get(axis);
+		if(f<min)
+			min = f;
+		if(f>max)
+			max = f;
+	}	
+	switch(a)
+	{
+	case Adjust::MIN:
+		return translate(p-min, axis);
+	case Adjust::MAX:
+		return translate(p-max, axis);
+	case Adjust::CENTER:
+		return translate(p-(max+min)/2, axis);
+	}
+}
 void Polyhedron::render(struct Color &c) const
 {
 	for(list<Polygon>::const_iterator it=faces.begin(); it!=faces.end(); it++)
 		it->render(c);
+}
+Polyhedron Polyhedron::translate(float p, Axis axis) const
+{
+	Polyhedron ret;
+	for(const Polygon &f : faces)
+		ret.faces.push_back(f.translate(p, axis));
+	return ret;
 }
 Polyhedron Polyhedron::translate(const Vector &v) const
 {
@@ -128,12 +219,39 @@ Polyhedron Polyhedron::rotateZ(float angle) const
 		p.faces.push_back(it->rotateZ(angle));
 	return p;
 }
-Polygon mkIsoscelesTriangleZ(float baseX, float heightY)
+Polyhedron Polyhedron::adjust(Axis axis, Adjust a, float p) const
+{
+        float min = faces.front().vertexes.front().get(axis);
+        float max = min;
+	
+	for(const Polygon &p : faces)
+	{
+	        for(const Vertex &v : p.vertexes)
+	        {
+        	        float f = v.get(axis);
+                	if(f<min)
+                        	min = f;
+	                if(f>max)
+        	                max = f;
+	        }
+	}
+	switch(a)
+	{
+	case Adjust::MIN:
+		return translate(p-min, axis);
+	case Adjust::MAX:
+		return translate(p-max, axis);
+	case Adjust::CENTER:
+		return translate(p-(max+min)/2, axis);
+	}
+}
+
+Polygon mkIsoscelesTriangle(float base, float height, Plane plane)
 {
 	Polygon p;
-	p.vertexes.push_back(Vertex(-baseX/2,      0, 0));
-	p.vertexes.push_back(Vertex( baseX/2,      0, 0));
-	p.vertexes.push_back(Vertex(      0, heightY, 0));
+	p.vertexes.push_back(Vertex(-base/2,      0, plane));
+	p.vertexes.push_back(Vertex( base/2,      0, plane));
+	p.vertexes.push_back(Vertex(      0, height, plane));
 	return p;
 }
 Polygon mkRectangleZ(float sizeX, float sizeY)
