@@ -6,6 +6,12 @@
 
 using namespace std;
 
+Vertex::Vertex()
+{
+	x = 0;
+	y = 0;
+	z = 0;
+}
 Vertex::Vertex(float _x, float _y, float _z)
 {
 	x = _x;
@@ -32,6 +38,18 @@ Vertex::Vertex(float p, float q, Plane plane)
 		z = q;
 		break;
 	}
+}
+float Vector::scalarProduct(const Vector &a) const
+{
+	return x*a.x + y*a.y + z*a.z;
+}
+Vector Vertex::operator-(const Vertex &a) const
+{
+	Vector v;
+	v.x = x - a.x;
+	v.y = y - a.y;
+	v.z = z - a.z;
+	return v;
 }
 float Vertex::get(Axis axis) const
 {
@@ -121,6 +139,13 @@ Polygon Polygon::revertVertexSequence() const
 		p.vertexes.push_back(*it);
 	return p;
 }
+Polygon Polygon::revertIfPositive(bool condition) const
+{
+	if( condition )
+		return revertVertexSequence();
+	Polygon p = *this;
+	return p;
+}
 Polygon Polygon::translate(float p, Axis axis) const
 {
 	Polygon ret;
@@ -178,6 +203,37 @@ Polygon Polygon::adjust(Axis axis, Adjust a, float p) const
 	case Adjust::CENTER:
 		return translate(p-(max+min)/2, axis);
 	}
+}
+Vector Polygon::getNormal() const
+{
+        Vector a, b, out;      // edges
+        float len;
+
+	if(vertexes.size() < 3)
+	{
+		printf("ERROR: Polygon::getNormal(): vertexes.size() < 3\n");
+		return out;
+	}
+	list<Vertex>::const_iterator v1 = vertexes.begin();
+	list<Vertex>::const_iterator v2 = v1;
+	v2++;
+	list<Vertex>::const_iterator v3 = v2;
+	v3++;
+	
+	a = (*v2) - (*v1);
+	b = (*v3) - (*v1);
+	
+        out.x = a.y*b.z - a.z*b.y;
+        out.y = a.z*b.x - a.x*b.z;
+        out.z = a.x*b.y - a.y*b.x;
+
+        len = sqrt(out.x*out.x + out.y*out.y + out.z*out.z);
+
+        out.x /= len;
+        out.y /= len;
+        out.z /= len;
+
+	return out;
 }
 void Polyhedron::render(struct Color &c) const
 {
@@ -292,10 +348,13 @@ Polyhedron mkPrism(const Polygon &base, const Vector &baseTranslation)
 		printf("ERROR: mkPrism(): base.vertexes.size() < 3\n");
 		return p;
 	}
+	Vector normal = base.getNormal();
+	float scalarProduct = normal.scalarProduct(baseTranslation);
+	bool cond = scalarProduct > 0;
 
-	p.faces.push_back(base.revertVertexSequence());
-	p.faces.push_back(base.translate(baseTranslation));
-	p.faces.push_back(mkParallelogram(base.vertexes.back(), base.vertexes.front(), baseTranslation));
+	p.faces.push_back(base.revertIfPositive(cond));
+	p.faces.push_back(base.translate(baseTranslation).revertIfPositive(!cond));
+	p.faces.push_back(mkParallelogram(base.vertexes.back(), base.vertexes.front(), baseTranslation).revertIfPositive(!cond));
 
 	list<Vertex>::const_iterator it1=base.vertexes.begin();
 	list<Vertex>::const_iterator it2=base.vertexes.begin();
@@ -303,12 +362,22 @@ Polyhedron mkPrism(const Polygon &base, const Vector &baseTranslation)
 
 	while(it2 != base.vertexes.end())
 	{
-		p.faces.push_back(mkParallelogram(*it1, *it2, baseTranslation));
+		p.faces.push_back(mkParallelogram(*it1, *it2, baseTranslation).revertIfPositive(!cond));
 		it1 ++;
 		it2 ++;
 	}
 
 	return p;
+}
+Polyhedron Polygon::mkPyramid(const Vertex &v) const
+{
+	Polyhedron p;
+
+	if(vertexes.size() < 3)
+	{
+		printf("ERROR: Polygon::mkPyramid(): vertexes.size() < 3\n");
+		return p;
+	}
 }
 Polyhedron mkCuboid(float sizeX, float sizeY, float sizeZ)
 {

@@ -53,7 +53,6 @@ int main( void )
 //	Polygon grass = mkRectangleZ(-15, 15, -15, 15, 0);
 //	grass.render(green);
 	
-	//Polyhedron tower = mkCuboid(4, 4, 8).translate(Vector(0, 0, 4));
 	Polyhedron tower = mkCuboid(4, 4, 8).adjust(Axis::Z, Adjust::MIN, 0);
 	tower.translate(Vector(-8, -8, 0)).render(XX);
 	tower.translate(Vector(-8,  8, 0)).render(XX);
@@ -66,27 +65,11 @@ int main( void )
 	wall.rotateZ(Pi/2).translate(Vector( 8, 0, 0)).render(pink);
 	wall.rotateZ(Pi/2).translate(Vector(-8, 0, 0)).render(pink);
 
-	Polyhedron wallRoof = mkPrism(mkIsoscelesTriangle(4, 3, Plane::XZ), Vector(0, -12, 0)).adjust(Axis::Y, Adjust::CENTER, 0).adjust(Axis::Z, Adjust::MIN, 3);//translate(Vector(0, 6, 3));
+	Polyhedron wallRoof = mkPrism(mkIsoscelesTriangle(4, 3, Plane::XZ), Vector(0, 12, 0)).adjust(Axis::Y, Adjust::CENTER, 0).adjust(Axis::Z, Adjust::MIN, 3);//translate(Vector(0, 6, 3));
 	wallRoof.translate(Vector( 8, 0, 0)).render(yellow);
 	wallRoof.translate(Vector(-8, 0, 0)).render(yellow);
 	wallRoof.rotateZ(Pi/2).translate(Vector(0, -8, 0)).render(yellow);
 	wallRoof.rotateZ(Pi/2).translate(Vector(0,  8, 0)).render(yellow);
-
-//	addOrientedCuboid(-10, -6, -10, -6, 0, 8, &yellow);
-//	addOrientedCuboid(-10, -6,   6, 10, 0, 8, &yellow);
-//	addOrientedCuboid(  6, 10, -10, -6, 0, 8, &yellow);
-//	addOrientedCuboid(  6, 10,   6, 10, 0, 8, &yellow);
-
-//	addOrientedCuboid(  -6,    6, -9.5, -6.5, 0, 3, &yellow);
-//	addOrientedCuboid(  -6,    6,  6.5,  9.5, 0, 3, &yellow);
-//	addOrientedCuboid(-9.5, -6.5,   -6,    6, 0, 3, &yellow);
-//	addOrientedCuboid( 6.5,  9.5,   -6,    6, 0, 3, &yellow);
-//
-//	addOrientedPyramidZ( -10.5, -5.5, -10.5, -5.5, 8, 15, &red);
-//	addOrientedPyramidZ( -10.5, -5.5,   5.5, 10.5, 8, 15, &red);
-//	addOrientedPyramidZ(   5.5, 10.5,   5.5, 10.5, 8, 15, &red);
-//	addOrientedPyramidZ(   5.5, 10.5, -10.5, -5.5, 8, 15, &red);
-
 	
 	addNormals(&white);
 

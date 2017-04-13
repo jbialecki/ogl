@@ -8,6 +8,7 @@
 struct Color;
 class Vertex;
 typedef Vertex Vector;
+class Polyhedron;
 
 enum class Axis
 {
@@ -25,6 +26,7 @@ enum class Adjust
 class Vertex
 {
 public:
+	Vertex();
 	Vertex(float _x, float _y, float _z);
 	Vertex(float p, float q, Plane plane);
 	float get(Axis axis) const;
@@ -34,6 +36,9 @@ public:
 	Vertex rotateX(float angle) const;
 	Vertex rotateY(float angle) const;
 	Vertex rotateZ(float angle) const;
+
+	Vector operator-(const Vertex &a) const;
+	float scalarProduct(const Vector &a) const;
 	
 	void print() const;
 	float x, y, z;
@@ -46,12 +51,16 @@ public:
 	std::list<Vertex> vertexes;
 	void render(struct Color &c) const;
 	Polygon revertVertexSequence() const;
+	Polygon revertIfPositive(bool condition) const;
 	Polygon translate(float p, Axis axis) const;
 	Polygon translate(const Vector &v) const;
 	Polygon rotateX(float angle) const;
 	Polygon rotateY(float angle) const;
 	Polygon rotateZ(float angle) const;
 	Polygon adjust(Axis axis, Adjust adjust, float p) const;
+	Vector getNormal() const;
+
+	Polyhedron mkPyramid(const Vertex &v) const;
 };
 
 class Polyhedron
